@@ -3,7 +3,7 @@
 
 import time
 from SimpleCV import Color, Image
-img = Image("lol.png")
+img = Image("images/dark.png")
 
 try:
     blue_distance = img.hueDistance(Color.BLUE).invert()
