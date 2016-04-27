@@ -7,14 +7,14 @@
 
 const int ENA = 9;
 const int ENB = 10;
-const int IN1 = ;
-const int IN2 = ;
-const int IN3 = ;
-const int IN4 = ;
+const int IN1 = 3;
+const int IN2 = 4;
+const int IN3 = 5;
+const int IN4 = 6;
 
 const int Vmax=100;
-const int L=   ;
-const int R=   ;
+const int L= 0.05  ;
+const int R= 0.015 ;
 
 void motioncommand(int v, int w)
 
