@@ -6,7 +6,7 @@
 	It is the concept note which is to be submitted to deliver the concept of the project.
 
 ###Proposal
-	It is the proposal of the project which is to be submitted to Department of Electronics and Computer Engineering.
+	It is the proposal of the project.
 
 ###Mid-Term 
 
