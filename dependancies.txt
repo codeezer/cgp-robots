@@ -1,0 +1,5 @@
+Contains the list of dependancies required for the project.
+
+Communication(Bluetooth):
+    libbluetooth-dev (apt)
+    pybluez (pip)
