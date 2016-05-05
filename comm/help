@@ -1,0 +1,9 @@
+hcitool scan --refresh
+# scan for nearby devices
+sudo rfcomm connect {serial number} {MAC address} {channel number}
+# bind device to the serial rfcomm channel
+# to rfcomm{serial number} on {channel number}
+# Each unique
+# change passcodes in /var/lib/bluetooth/{MAC address}/pincodes
+sudo /etc/init.d/bluetooth restart
+# restart the bluetooth daemon
