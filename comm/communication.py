@@ -11,3 +11,7 @@ bot1.write('Something')  # Comm with bot1
 
 # bot1.readline()  # Read from bot1
 # bot2.readline() # Read from bot2
+
+# Always remember to close the serial port
+# Bad things happen otherwise
+bot1.close()
