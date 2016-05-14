@@ -6,7 +6,8 @@ bot1 = serial.Serial('/dev/rfcomm1', 9600)
 bot1.timeout = 1
 # bot2 = serial.Serial('/dev/rfcomm2', 9600)
 
-bot1.write('Something')  # Comm with bot1
+bot1.write('0#')  # Comm with bot1
+bot1.readline()
 # bot2.write('Something') # Comm with bot2
 
 # bot1.readline()  # Read from bot1
@@ -14,4 +15,4 @@ bot1.write('Something')  # Comm with bot1
 
 # Always remember to close the serial port
 # Bad things happen otherwise
-bot1.close()
+# bot1.close()

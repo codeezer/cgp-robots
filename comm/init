@@ -1,0 +1,2 @@
+sudo rfcomm bind all
+sudo rfcomm bind 1
