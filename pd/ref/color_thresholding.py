@@ -4,7 +4,12 @@
 import cv2
 import numpy as np
 
+def nothing(x):
+    pass
+
 cap = cv2.VideoCapture(0)
+cv2.namedWindow('frame',cv2.CV_WINDOW_AUTOSIZE)
+cv2.createTrackbar('HSV','frame',0,255,nothing)
 
 while(1):
 
