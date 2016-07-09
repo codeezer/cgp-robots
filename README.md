@@ -1,2 +1,5 @@
-#Coordinated GamePlaying Robots
-    
+#Coordinated Gameplaying Robots
+
+## POSITION DETECTION
+
+
