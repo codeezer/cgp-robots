@@ -13,8 +13,8 @@ const int IN3 = 5;
 const int IN4 = 6;
 
 const int Vmax=100;
-const int L= 0.05  ;
-const int R= 0.015 ;
+const float L= 0.05  ;
+const float R= 0.015 ;
 
 void motioncommand(int v, int w)
 
