@@ -4,6 +4,7 @@
 import cv2
 import numpy as np
 import sys
+import math
 
 def main():
     #video(0)
@@ -11,7 +12,9 @@ def main():
     image('btt.jpg','blue')
     print("ROBOT2")
     image('btt.jpg','green')
-
+    print("BALL")
+    image('btt.jpg','red')
+    
 
 def video(camera_no):
     cap = cv2.VideoCapture(camera_no)
@@ -19,15 +22,15 @@ def video(camera_no):
     while(1):
         # Take each frame
         _, frame = cap.read()
-        mask = process(frame)
+        mask = process(frame,'blue')
         try:
             contours,h = cv2.findContours(mask.copy(),1,2)
             cnt = contours[0]
             M = cv2.moments(cnt)
             area = cv2.contourArea(cnt)
             print(len(contours))
+            cx = int(M['m10']/M['m00'])
             if area > 100:
-                cx = int(M['m10']/M['m00'])
                 cy = int(M['m01']/M['m00'])
                 #hull = cv2.convexHull(cnt)
                 #cv2.circle(mask,(cx,cy), 5, (0,255,255), -1)
@@ -37,9 +40,10 @@ def video(camera_no):
                 #cv2.imshow('hull',hull)
             else:
                 cv2.imshow('mask',mask)
+                print('except')
         except:
             cv2.imshow('mask',mask)
-            print('except')
+            #print('except')
 
         k = cv2.waitKey(5) & 0xFF
         if k == 27:
@@ -50,35 +54,34 @@ def video(camera_no):
 def image(_image,color):
     img = cv2.imread(_image)
     height, width, channels = img.shape
-
     mask = process(img,color)
     contours,h = cv2.findContours(mask.copy(),1,2)
+
     xcor=[]
     ycor=[]
-    for i in range(len(contours)):
+    no_of_contours = len(contours)
+
+    for i in range(no_of_contours):
         cnt = contours[i]
         M = cv2.moments(cnt)
         cx = int(M['m10']/M['m00'])
         cy = int(M['m01']/M['m00'])
         cv2.circle(mask,(cx,cy), 5, (0,255,255), -1)
         (x,y),(width,height),theta = cv2.minAreaRect(cnt)
-        '''if theta ==0:
-            xcor.append(x);
-            ycor.append(y);
-        '''
+        #print(x,y,width,height,theta)
         xcor.append(x)
         ycor.append(y)
-        print(x,y,width,height,theta)
 
-    try:
+    if no_of_contours == 2:
         midx = (xcor[0]+xcor[1])/2
         midy = (ycor[0]+ycor[1])/2
         slope = (ycor[0]-ycor[1])/(xcor[0]-xcor[1])
-        print(midx,midy,slope)
+        theta = math.degrees(math.atan(slope))
+        print(midx,midy,theta)
 
+    else:
+        print(x,y,width,height,theta)
 
-    except:
-        print("no more contour")
 
     #cv2.imshow('res',mask)
 
@@ -88,7 +91,8 @@ def image(_image,color):
 
 def process(frame,color):
 
-    frame = cv2.GaussianBlur(frame, (5, 5), 0)
+    cv2.imshow("frame",frame)
+    frame = cv2.GaussianBlur(frame, (15, 15), 0)
     #cv2.imshow("frame",frame)
     # Convert BGR to HSV
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -109,6 +113,20 @@ def process(frame,color):
         # Threshold the HSV image to get only blue colors
         mask = cv2.inRange(hsv, lower_green, upper_green)
         #cv2.imshow('mask',mask)
+
+    if color == 'red':
+        # lower mask (0-10)
+        lower_red = np.array([0,50,50])
+        upper_red = np.array([10,255,255])
+        mask0 = cv2.inRange(hsv, lower_red, upper_red)
+
+        # upper mask (170-180)
+        lower_red = np.array([170,50,50])
+        upper_red = np.array([180,255,255])
+        mask1 = cv2.inRange(hsv, lower_red, upper_red)
+
+        # join my masks
+        mask = mask0+mask1
 
     #mask = cv2.erode(mask, None, iterations=2)
     #mask = cv2.dilate(mask, None, iterations=2)
