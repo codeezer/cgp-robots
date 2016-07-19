@@ -3,22 +3,7 @@
 
 import cv2
 import numpy as np
-import sys
 import math
-
-def main():
-    #video(0,'red')
-    ROBOT1 = np.array([[]])
-    ROBOT2 = np.array([[]])
-    BALL = np.array([])
-
-    ROBOT1 = image('btt.jpg','blue')
-    ROBOT2 = image('btt.jpg','green')
-    BALL = image('btt.jpg','red')
-    
-    print(ROBOT1)
-    print(ROBOT2)
-    print(BALL)
 
 def video(camera_no,color):
     cap = cv2.VideoCapture(camera_no)
@@ -27,8 +12,7 @@ def video(camera_no,color):
     ycor = np.array([])
 
     while(1):
-        xcor=[]
-        ycor=[]
+
         count=0
         # Take each frame
         _, frame = cap.read()
@@ -60,18 +44,18 @@ def video(camera_no,color):
             midy = (ycor[0]+ycor[1])/2
             slope = (ycor[0]-ycor[1])/(xcor[0]-xcor[1])
             theta = math.degrees(math.atan(slope))
+
             #print(xcor[0],ycor[0],xcor[1],ycor[1])
-            print(midx,midy,theta)
-            '''return np.array([(xcor[0]+xcor[1])/2, (ycor[0]+ycor[1])/2,
-            (ycor[0]-ycor[1])/(xcor[0]-xcor[1]),math.degrees(math.atan(slope))])'''
+            #print(midx,midy,theta)
+            return([midx,midy,theta])
 
         elif count == 0:
             print('0')
             pass
 
         elif count == 1:
-            print(xcor[0],ycor[0],width,height,theta)
-
+            #print(xcor[0],ycor[0],width,height,theta)
+            return([xcor[0],ycor[0],width,height,theta])
         
         cv2.imshow('img',mask)
         k = cv2.waitKey(5) & 0xFF
@@ -79,6 +63,7 @@ def video(camera_no,color):
             break
     cv2.destroyAllWindows()
     
+
 
 def image(_image,color):
     
@@ -113,7 +98,8 @@ def image(_image,color):
         return np.array([xcor[0],ycor[0],xcor[1],ycor[1]])
     
     elif no_of_contours == 0:
-        print('xaina')
+        #print('xaina')
+        return np.array([])
 
     else:
         #print(xcor[0],ycor[0],width,height,theta)
@@ -175,6 +161,3 @@ def process(frame,color):
     #res = cv2.bitwise_and(frame,frame, mask= mask)
     #cv2.imshow('kaka',mask)
     return mask
-
-if __name__=='__main__':
-    main()
