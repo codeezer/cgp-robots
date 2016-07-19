@@ -55,8 +55,8 @@ def video(camera_no,color):
 
         elif count == 1:
             #print(xcor[0],ycor[0],width,height,theta)
-            return([xcor[0],ycor[0],width,height,theta])
-        
+            #return([xcor[0],ycor[0],width,height,theta])
+            pass
         cv2.imshow('img',mask)
         k = cv2.waitKey(5) & 0xFF
         if k == 27:
@@ -94,7 +94,7 @@ def image(_image,color):
         slope = (ycor[0]-ycor[1])/(xcor[0]-xcor[1])
         theta = math.degrees(math.atan(slope))
         #print(xcor[0],ycor[0],xcor[1],ycor[1])
-        #print(midx,midy,theta)
+        print(midx,midy,theta)
         return np.array([xcor[0],ycor[0],xcor[1],ycor[1]])
     
     elif no_of_contours == 0:
