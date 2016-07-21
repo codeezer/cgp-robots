@@ -47,8 +47,9 @@ def video(camera_no,color):
             theta = math.degrees(math.atan(slope))
 
             #print(xcor[0],ycor[0],xcor[1],ycor[1])
+            return([xcor[0],ycor[0],xcor[1],ycor[1]])
             #print(midx,midy,theta)
-            return([midx,midy,theta])
+            #return([midx,midy,theta])
 
         elif count == 0:
             print('0')
