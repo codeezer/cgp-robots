@@ -1,37 +1,51 @@
 #include <SoftwareSerial.h>
+#include <Encoder.h>
 //Global Variables Declaration
 
-#define TX 2
-#define RX 3
+//*** Bluetooth ********
+#define TX 9
+#define RX 10
 #define BAUD 9600
 
-//***********************
+//*** Encoder *********
+#define encAClk 2     //Interrupt Pin
+#define encADT 4
+#define encBClk 3     //Interrupt Pin
+#define encBDT 5
+
+//*** Motor Driver ******
 #define aPwm 6
 #define aIn1 7
-#define aIn2 5
+#define aIn2 8
 
 #define bPwm 11
 #define bIn1 12
 #define bIn2 13
 //***********************
 
-SoftwareSerial BT(TX,RX);
 
 String inData;
 int x;
 int i;
 
 void setup() {
-  BT.begin(BAUD);
-  BT.println("Hello from Arduino");
-  //*****************
-  pinMode(aPwm, OUTPUT);
-  pinMode(aIn1, OUTPUT);
-  pinMode(aIn2, OUTPUT);
-  pinMode(bPwm, OUTPUT);
-  pinMode(bIn1, OUTPUT);
-  pinMode(bIn2, OUTPUT);
-  //*****************
+    //*** Encoder *******
+    Encoder encLeft(encAClk, encADT);
+    Encoder encRight(encBClk, encADT);
+
+    //*** Bluetooth *****
+    SoftwareSerial BT(TX,RX);
+    BT.begin(BAUD);
+    BT.println("Hello from Arduino");
+
+    //*** Motor Driver **
+    pinMode(aPwm, OUTPUT);
+    pinMode(aIn1, OUTPUT);
+    pinMode(aIn2, OUTPUT);
+    pinMode(bPwm, OUTPUT);
+    pinMode(bIn1, OUTPUT);
+    pinMode(bIn2, OUTPUT);
+    //*****************
 }
 
 void loop() {
@@ -74,7 +88,7 @@ void loop() {
               break;
 
               case 20:
-                dummydata();
+                encoderData();
               break;
               
               default:
@@ -87,14 +101,14 @@ void loop() {
 }
 
 
-void dummydata() {
-  for(i=0;i<=30;i++)
-  {
-    BT.print(i);
-    BT.print(" ");
-    BT.println(i+30);
-    delay(5);
-  }
+void encoderData() {
+  left = encLeft.read();
+  BT.print("Left enc data   ")
+  BT.println(left)
+
+  right = encRight.read();
+  BT.print("Right enc data   ")
+  BT.println(right)
 }
 
 
