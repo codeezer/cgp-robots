@@ -4,3 +4,8 @@ Communication(Bluetooth):
     libbluetooth-dev (apt)
     pyserial (pip)
     pybluez (pip)
+
+Position Detection:		
+	opencv2	
+	math
+
