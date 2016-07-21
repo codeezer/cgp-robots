@@ -88,7 +88,7 @@ void loop() {
               break;
 
               case 20:
-                dummydata();
+                encoderData();
               break;
               
               default:
@@ -101,14 +101,14 @@ void loop() {
 }
 
 
-void dummydata() {
-  for(i=0;i<=30;i++)
-  {
-    BT.print(i);
-    BT.print(" ");
-    BT.println(i+30);
-    delay(5);
-  }
+void encoderData() {
+  left = encLeft.read();
+  BT.print("Left enc data   ")
+  BT.println(left)
+
+  right = encRight.read();
+  BT.print("Right enc data   ")
+  BT.println(right)
 }
 
 
