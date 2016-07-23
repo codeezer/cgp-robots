@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 import math
 
-def video(camera_no,color):
+def video(camera_no, color, flag):
     cap = cv2.VideoCapture(camera_no)
 
     xcor = np.array([])
@@ -16,7 +16,7 @@ def video(camera_no,color):
         count=0
         # Take each frame
         _, frame = cap.read()
-        cv2.imshow('org',frame)
+        #cv2.imshow('org',frame)
 
 
         Y, X = frame.shape[:2]
@@ -24,12 +24,13 @@ def video(camera_no,color):
 
         contours,h = cv2.findContours(mask.copy(),1,2)
         no_of_contours = len(contours)
+
         for i in range(no_of_contours):
             cnt = contours[i]
             #cnt = cv2.convexHull(cnt)
             area = cv2.contourArea(cnt)
 
-            if area > 100:
+            if area > 250:
                 M = cv2.moments(cnt)
                 cx = int(M['m10']/M['m00'])
                 cy = int(M['m01']/M['m00'])
@@ -40,28 +41,28 @@ def video(camera_no,color):
                 ycor = np.append(ycor,Y-y)
                 count = count+1
 
-        if count == 2:
+        if count == 0:
+            pass
+
+
+        elif count == 2 & flag == 1:
             midx = (xcor[0]+xcor[1])/2
             midy = (ycor[0]+ycor[1])/2
             slope = (ycor[0]-ycor[1])/(xcor[0]-xcor[1])
             theta = math.degrees(math.atan(slope))
-
             #print(xcor[0],ycor[0],xcor[1],ycor[1])
-            return([xcor[0],ycor[0],xcor[1],ycor[1]])
+            return([xcor[0],ycor[0],xcor[1],ycor[1], midx, midy, theta])
             #print(midx,midy,theta)
             #return([midx,midy,theta])
 
-        elif count == 0:
-            print('0')
-            pass
 
-        elif count == 1:
+        elif count == 1 & flag == 0:
             #print(xcor[0],ycor[0],width,height,theta)
-            #return([xcor[0],ycor[0],width,height,theta])
-            print('1')
-            pass
+            return([xcor[0],ycor[0],width,height,theta])
+            #pass
 
-        cv2.imshow('img',mask)
+
+        #cv2.imshow('img',mask)
         k = cv2.waitKey(5) & 0xFF
         if k == 27:
             break
@@ -72,9 +73,11 @@ def video(camera_no,color):
 def process(frame,color):
 
     #cv2.imshow("frame",frame)
-    #frame = cv2.GaussianBlur(frame, (105, 65), 0)
+    frame = cv2.GaussianBlur(frame, (7, 7), 0)
+    #frame = cv2.medianBlur(frame, 5)
+    frame = cv2.bilateralFilter(frame,9,75,75)
 
-    cv2.imshow("frame",frame)
+    #cv2.imshow("frame",frame)
     # Convert BGR to HSV
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     #cv2.imshow("frame",hsv)
@@ -116,6 +119,7 @@ def process(frame,color):
     #res = cv2.bitwise_and(frame,frame, mask= mask)
     #cv2.imshow('kaka',mask)
     return mask
+
 
 
 
