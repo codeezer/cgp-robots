@@ -41,6 +41,7 @@ void loop()
 {
   /*get the required velocity and rotational speed after comparing
   current trajectory to the desired one (v,w)*/
+  
   float v,w;
   motioncommand(v,w);
 }
