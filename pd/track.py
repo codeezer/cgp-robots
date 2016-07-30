@@ -5,7 +5,9 @@ import cv2
 import numpy as np
 import math
 
-def video(camera_no, color, flag):
+#fgbg = cv2.BackgroundSubtractorMOG2()
+
+def video(camera_no, color):
     cap = cv2.VideoCapture(camera_no)
 
     xcor = np.array([])
@@ -18,13 +20,11 @@ def video(camera_no, color, flag):
         _, frame = cap.read()
         #cv2.imshow('org',frame)
 
-
         Y, X = frame.shape[:2]
         mask = process(frame,color)
 
         contours,h = cv2.findContours(mask.copy(),1,2)
         no_of_contours = len(contours)
-
         for i in range(no_of_contours):
             cnt = contours[i]
             #cnt = cv2.convexHull(cnt)
@@ -39,13 +39,15 @@ def video(camera_no, color, flag):
                 #print(x,y,width,height,theta)
                 xcor = np.append(xcor,x)
                 ycor = np.append(ycor,Y-y)
+
                 count = count+1
+
 
         if count == 0:
             pass
 
 
-        elif count == 2 & flag == 1:
+        elif count == 2:
             midx = (xcor[0]+xcor[1])/2
             midy = (ycor[0]+ycor[1])/2
             slope = (ycor[0]-ycor[1])/(xcor[0]-xcor[1])
@@ -56,9 +58,9 @@ def video(camera_no, color, flag):
             #return([midx,midy,theta])
 
 
-        elif count == 1 & flag == 0:
+        elif count == 1:
             #print(xcor[0],ycor[0],width,height,theta)
-            return([xcor[0],ycor[0],width,height,theta])
+            return([xcor[0],ycor[0],width,height])
             #pass
 
 
@@ -73,11 +75,13 @@ def video(camera_no, color, flag):
 def process(frame,color):
 
     #cv2.imshow("frame",frame)
-    frame = cv2.GaussianBlur(frame, (7, 7), 0)
+    #frame = cv2.GaussianBlur(frame, (15, 15), 0)
+    frame = cv2.blur(frame,(5,5))
     #frame = cv2.medianBlur(frame, 5)
-    frame = cv2.bilateralFilter(frame,9,75,75)
+    #frame = cv2.bilateralFilter(frame,9,75,75)
 
     #cv2.imshow("frame",frame)
+
     # Convert BGR to HSV
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     #cv2.imshow("frame",hsv)
@@ -89,31 +93,37 @@ def process(frame,color):
         # Threshold the HSV image to get only blue colors
         mask = cv2.inRange(hsv, lower_blue, upper_blue)
 
+
     elif color == 'green':
         # Threshold the HSV image for only green colors
         lower_green = np.array([40,70,70])
-        upper_green = np.array([80,255,255])
+        upper_green = np.array([80,200,200])
 
         # Threshold the HSV image to get only blue colors
         mask = cv2.inRange(hsv, lower_green, upper_green)
         #cv2.imshow('mask',mask)
 
+
     if color == 'red':
         # lower mask (0-10)
-        lower_red = np.array([0,50,50])
+        lower_red = np.array([0,110,90])
         upper_red = np.array([10,255,255])
         mask0 = cv2.inRange(hsv, lower_red, upper_red)
 
         # upper mask (170-180)
-        lower_red = np.array([170,50,50])
+        lower_red = np.array([170,110,50])
         upper_red = np.array([180,255,255])
         mask1 = cv2.inRange(hsv, lower_red, upper_red)
 
+        
         # join my masks
         mask = mask0+mask1
+    #mask = fgbg.apply(mask)
+    #mask = cv2.GaussianBlur(mask,(5,5),0)
 
-    mask = cv2.erode(mask, None, iterations=3)
     mask = cv2.dilate(mask, None, iterations=3)
+    mask = cv2.erode(mask, None, iterations=3)
+    #mask = cv2.dilate(mask, None, iterations=2)
 
     # Bitwise-AND mask and original image
     #res = cv2.bitwise_and(frame,frame, mask= mask)
