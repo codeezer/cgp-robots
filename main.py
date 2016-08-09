@@ -19,6 +19,7 @@ def main():
 	robot1 = np.array([])
 	robot2 = np.array([])
 
+
 	'''
 	#get robot1 position
 	#(x1,y1,x2,y2,x,y,theta)
@@ -35,19 +36,18 @@ def main():
 	#(x1,y1,x2,y2,x,y,theta)
 	#robot2 = track.video(1, 'green')
 	#print(robot2[6])
-
 	'''
 
 	#get ball's position
 	#(x,y,w,h)
-	ball = track.video(2, 'red')
+	ball = track.video(1, 'red')
 	#print(ball)
 	print(sfx*ball[0], sfy*ball[1], sfx*ball[2], sfy*ball[3])
 
 	time.sleep(5)
 	#get ball's position
 	#(x,y,w,h)
-	ball = track.video(2, 'red')
+	ball = track.video(1, 'red')
 	#print(ball)
 	print(sfx*ball[0], sfy*ball[1], sfx*ball[2], sfy*ball[3])
 

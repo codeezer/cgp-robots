@@ -29,7 +29,7 @@ def video(camera_no, color):
             cnt = contours[i]
             #cnt = cv2.convexHull(cnt)
             area = cv2.contourArea(cnt)
-
+            print(area)
             if area > 250:
                 M = cv2.moments(cnt)
                 cx = int(M['m10']/M['m00'])
