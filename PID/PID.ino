@@ -15,8 +15,19 @@ HMC5883L compass;
 #define bIn1 8
 #define bIn2 7
 
-#define L 13.5
-#define R 3.3
+#define L 0.135
+#define R 0.033
+
+
+float x = 0;
+float y = 0;
+float phi;
+
+float goal_x=1;
+float goal_y=1;
+float vel_robot=0;
+float omega_robot=0;
+
 
 float integral1,integral2;
 float previous_error_left,previous_error_right;
@@ -70,24 +81,20 @@ void setup() {
   Serial.begin(9600);
 
 }
-
+void gotogoal();
 void loop() { 
   
   doIt();
-  Stop();
-  delay(5000);
   
 }
   
 
 void doIt(){
-  for (int i = 0; i<=400; i++)
+  for (int i = 0; i<=40; i++)
   {
     current_encoder_left = knobLeft.read();
     current_encoder_right = -knobRight.read();
-  
-    motioncommand(6*R,0);
-  
+ 
     measuredleft = current_encoder_left - previous_encoder_left;
     measuredright = current_encoder_right - previous_encoder_right;
     int xDegree = get_angle();
@@ -102,7 +109,11 @@ void doIt(){
   
     //  Serial.println(current_encoder_right - previous_encoder_right);
     //  Serial.print(" ");
-  
+    
+    
+    gotogoal();
+   
+ 
     previous_encoder_left = current_encoder_left;
     previous_encoder_right = current_encoder_right;
   
@@ -112,16 +123,53 @@ void doIt(){
   }
 }
 
+
+
+
+void gotogoal()
+{
+  phi=get_angle()*180.0/PI;
+ float del_encoder_left,del_encoder_right,error,error_dash;
+
+  
+ 
+ /*get encoder readings*/
+ del_encoder_left = measuredleft;
+ del_encoder_right = measuredright;
+
+ float left_wheel_distance = 2*PI*R*del_encoder_left/60;
+ float right_wheel_distance = 2*PI*R*del_encoder_right/60;
+ float distance_centre = (left_wheel_distance + right_wheel_distance)/2;
+ phi = get_angle()*180.0/PI;
+ x += distance_centre*cos(phi);
+ y += distance_centre*sin(phi);
+
+
+ 
+ error = atan((goal_y - y)/(goal_x - x)) - phi;
+ error_dash = atan2(sin(error),cos(error));
+
+ omega_robot = 0.6*error_dash; 
+ 
+ vel_robot = 35/(omega_robot*omega_robot+1); 
+ motioncommand(int(vel_robot),int(omega_robot));
+ 
+}
+  
+
 void motioncommand(int v, int w)
 { 
   
   float derivative, derivative2, integral2, cmd_vel, v_left, v_right, error = 0, error2 = 0;
+ 
+  
+ v_right = (2*v+w*L)/(4*PI*R*20);
+ Serial.print("HELLO");
+ Serial.println(v);
+ Serial.println(int(v_right));
+ v_left = (2*v-w*L)/(4*PI*R*20);
   
   
-  v_right = (2*v+w*L)/(2*R);
-  v_left = (2*v-w*L)/(2*R);
-  
-
   error = v_left - measuredleft;     /*PID*/
   error2 = v_right - measuredright;  /*PID*/ 
   
