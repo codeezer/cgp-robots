@@ -20,11 +20,11 @@ HMC5883L compass;
 
 
 float x = 0;
-float y = 0;
+float y = 0.3;
 float phi;
 
-float goal_x=1;
-float goal_y=1;
+float goal_x=0.7;
+float goal_y=0.3;
 float vel_robot=0;
 float omega_robot=0;
 
@@ -124,11 +124,11 @@ void doIt(){
 }
 
 
-
+float prev_error_dash=0;
 
 void gotogoal()
 {
-  phi=get_angle()*180.0/PI;
+  
  float del_encoder_left,del_encoder_right,error,error_dash;
 
   
@@ -140,18 +140,25 @@ void gotogoal()
  float left_wheel_distance = 2*PI*R*del_encoder_left/60;
  float right_wheel_distance = 2*PI*R*del_encoder_right/60;
  float distance_centre = (left_wheel_distance + right_wheel_distance)/2;
- phi = get_angle()*180.0/PI;
+ 
+ phi=get_angle()*PI/180.0;
  x += distance_centre*cos(phi);
  y += distance_centre*sin(phi);
+ Serial.println("HELLO");
+ Serial.print(x);
+ Serial.print(",");
+ Serial.println(y);
 
 
  
  error = atan((goal_y - y)/(goal_x - x)) - phi;
  error_dash = atan2(sin(error),cos(error));
 
- omega_robot = 0.6*error_dash; 
+ omega_robot = 42*error_dash + 2*(error_dash-prev_error_dash); 
+ prev_error_dash = error_dash;
  
- vel_robot = 35/(omega_robot*omega_robot+1); 
+ vel_robot = 20;
+ //vel_robot = 35/(omega_robot*omega_robot+1); 
  motioncommand(int(vel_robot),int(omega_robot));
  
 }
@@ -164,11 +171,11 @@ void motioncommand(int v, int w)
  
   
  v_right = (2*v+w*L)/(4*PI*R*20);
- Serial.print("HELLO");
- Serial.println(v);
- Serial.println(int(v_right));
+ 
+ 
  v_left = (2*v-w*L)/(4*PI*R*20);
   
+
   
   error = v_left - measuredleft;     /*PID*/
   error2 = v_right - measuredright;  /*PID*/ 
@@ -261,5 +268,3 @@ int get_angle(){
   //float zDegrees = zHeading * 180/M_PI;
   return xDegrees;
 }
-
-

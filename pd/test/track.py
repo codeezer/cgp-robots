@@ -129,3 +129,56 @@ def process(frame,color):
     #res = cv2.bitwise_and(frame,frame, mask= mask)
     cv2.imshow('kaka',mask)
     return mask
+
+
+
+
+
+#for images
+
+def image(_image,color,flag):
+
+    xcor = np.array([])
+    ycor = np.array([])
+
+    img = cv2.imread(_image)
+
+    Y, X = img.shape[:2]
+    mask = process(img,color)
+    contours,h = cv2.findContours(mask.copy(),1,2)
+    no_of_contours = len(contours)
+    for i in range(no_of_contours):
+        cnt = contours[i]
+        M = cv2.moments(cnt)
+        area = cv2.contourArea(cnt)
+	if area > 25:
+		cx = int(M['m10']/M['m00'])
+        	cy = int(M['m01']/M['m00'])
+        	#cv2.circle(mask,(cx,cy), 5, (0,255,255), -1)
+        	(x,y),(width,height),theta = cv2.minAreaRect(cnt)
+        	#print(x,y,width,height,theta)
+        	xcor = np.append(xcor,x)
+        	ycor = np.append(ycor,Y-y)
+
+    if no_of_contours >= 2:
+        midx = (xcor[0]+xcor[1])/2
+        midy = (ycor[0]+ycor[1])/2
+        slope = (ycor[0]-ycor[1])/(xcor[0]-xcor[1])
+        theta = math.degrees(math.atan(slope))
+        #print(xcor[0],ycor[0],xcor[1],ycor[1])
+        #print(midx,midy,theta)
+        return np.array([xcor[0],ycor[0],xcor[1],ycor[1],midx,midy,theta])
+
+    elif no_of_contours == 0:
+        #print('xaina')
+        return np.array([])
+
+    else:
+        #print(xcor[0],ycor[0],width,height,theta)
+        return np.array([xcor[0],ycor[0],width,height,-theta])
+
+
+    #cv2.imshow('res',mask)
+    cv2.imwrite(flag+'.jpg',mask)
+    if cv2.waitKey(0) & 0xff == 27:
+        cv2.destroyAllWindows()
