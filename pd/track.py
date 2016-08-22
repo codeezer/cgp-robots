@@ -29,7 +29,7 @@ def video(camera_no, color):
             cnt = contours[i]
             #cnt = cv2.convexHull(cnt)
             area = cv2.contourArea(cnt)
-            print(area)
+
             if area > 150:
                 M = cv2.moments(cnt)
                 cx = int(M['m10']/M['m00'])
@@ -64,7 +64,7 @@ def video(camera_no, color):
             #pass
 
 
-        cv2.imshow('img',mask)
+        #cv2.imshow('img',mask)
         k = cv2.waitKey(5) & 0xFF
         if k == 27:
             break
@@ -76,7 +76,7 @@ def process(frame,color):
 
     #cv2.imshow("frame",frame)
     frame = cv2.GaussianBlur(frame, (15, 15), 0)
-    frame = cv2.blur(frame,(5,5))
+    #frame = cv2.blur(frame,(5,5))
     #frame = cv2.medianBlur(frame, 5)
     #frame = cv2.bilateralFilter(frame,9,75,75)
 
@@ -127,5 +127,5 @@ def process(frame,color):
 
     # Bitwise-AND mask and original image
     #res = cv2.bitwise_and(frame,frame, mask= mask)
-    cv2.imshow('kaka',mask)
+    #cv2.imshow('kaka',mask)
     return mask
