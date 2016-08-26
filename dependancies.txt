@@ -6,8 +6,8 @@ Communication(Bluetooth):
     pybluez (pip)
 
 Position Detection:		
-	opencv2	
-	math
+    python-opencv2	
+	python-math
 
 Encoder Arduino Library 
 Compass Arduino Library 
